@@ -1,0 +1,300 @@
+﻿<Application 
+    x:Class="SessionSpotter.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:SessionSpotter"
+    xmlns:tr="clr-namespace:System.Windows.Controls;assembly=TransparentWindowLibrary"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <!-- Converters -->
+        <local:EventTypeAcronymConverter x:Key="EventTypeAcronymConverter"/>
+        <local:RegisteredUsersConverter x:Key="RegisteredUsersConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:SecondsToTimeSpanConverter x:Key="SecondsToTimeSpanConverter"/>
+        <!-- Effects -->
+        <DropShadowEffect x:Key="ShadowEffect" Opacity="0.6"  Color="Black" BlurRadius="3" ShadowDepth="3" Direction="360"/>
+        
+        <!-- Colors -->
+        <SolidColorBrush x:Key="WindowBackgroundBrush">#CC000000</SolidColorBrush>
+        <SolidColorBrush x:Key="WindowForegroundBrush">Orange</SolidColorBrush>
+
+        <SolidColorBrush x:Key="TooltipBorderBrush">#66222222</SolidColorBrush>
+        <SolidColorBrush x:Key="TooltipBackgroundBrush">#F2000000</SolidColorBrush>
+
+        <SolidColorBrush x:Key="UpdateTimerForegroundBrush">Gray</SolidColorBrush>
+        <SolidColorBrush x:Key="GridLinesBrush">#05FFFFFF</SolidColorBrush>
+
+        <SolidColorBrush x:Key="RBorderBrush">Red</SolidColorBrush>
+        <SolidColorBrush x:Key="RBackgroundBrush">DarkRed</SolidColorBrush>
+
+        <SolidColorBrush x:Key="QBorderBrush">Orange</SolidColorBrush>
+        <SolidColorBrush x:Key="QBackgroundBrush">#4C2E00</SolidColorBrush>
+
+        <SolidColorBrush x:Key="TBorderBrush">Green</SolidColorBrush>
+        <SolidColorBrush x:Key="TBackgroundBrush">DarkGreen</SolidColorBrush>
+
+        <SolidColorBrush x:Key="HighAlertForegroundBrush">Yellow</SolidColorBrush>
+        <SolidColorBrush x:Key="LowAlertForgroundBrush">Lime</SolidColorBrush>
+        
+        <!-- Buttons -->
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="{StaticResource WindowForegroundBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="5 2"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border
+                            Padding="{TemplateBinding Padding}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}">
+                            <ContentPresenter 
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="Yellow"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="SettingsToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <StackPanel Background="{TemplateBinding Background}">
+                            <Rectangle Margin="1 1 1 0" Width="14" Fill="{TemplateBinding Foreground}" Height="3"/>
+                            <Rectangle Margin="1 1 1 0" Width="14" Fill="{TemplateBinding Foreground}" Height="3"/>
+                            <Rectangle Margin="1" Width="14" Fill="{TemplateBinding Foreground}" Height="3"/>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="Silver"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Foreground" Value="Orange"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Slider thumb style -->
+        <Style TargetType="Thumb">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border
+                            Width="70"
+                            Margin="{Binding Path=Margin, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                            CornerRadius="{Binding Path=CornerRadius, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                            BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                            BorderThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                            Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                            Effect="{StaticResource ShadowEffect}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock 
+                                    Padding="2 0"
+                                    Foreground="{Binding Path=PrefixForeground, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                                    FontWeight="Medium"
+                                    Text="{Binding Path=Prefix, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"/>
+                                <TextBlock 
+                                    Opacity="1.0" 
+                                    Padding="2 0"
+                                    Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                                    FontWeight="{Binding Path=FontWeight, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                                    Text="{Binding Path=Text, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"/>
+                                <TextBlock 
+                                    Opacity="1.0" 
+                                    Padding="2 0"
+                                    Foreground="{Binding Path=PostfixForeground, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"
+                                    FontWeight="Normal"
+                                    Text="{Binding Path=Postfix, RelativeSource={RelativeSource AncestorType={x:Type local:SessionSlider}}}"/>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ToolTip}">
+            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TooltipBorderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource WindowForegroundBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToolTip}">
+                        <Border 
+                            x:Name="Root" 
+                            CornerRadius="2" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            Background="{StaticResource TooltipBackgroundBrush}"
+                            BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Cursor="{TemplateBinding Cursor}"
+                                Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Slider control style -->
+        <Style x:Key="SessionSliderStyle" TargetType="{x:Type local:SessionSlider}">
+            <!-- initialization required for border animation -->
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Margin" Value="0 1 0 0"/>
+            <Setter Property="CornerRadius" Value="0 10 10 0"/>
+            <Setter Property="IsEnabled" Value="True"/>
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="7200"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Prefix" Value="{Binding EventType, Converter={StaticResource EventTypeAcronymConverter}}"/>
+            <Setter Property="PrefixForeground" Value="Silver"/>
+            <Setter Property="Text" Value="{Binding StartTimeLocal, StringFormat='h:mm t'}"/>
+            <Setter Property="Foreground" Value="Silver"/>
+            <Setter Property="Postfix" Value="{Binding NumRegistered, Converter={StaticResource RegisteredUsersConverter}}"/>
+            <Setter Property="PostfixForeground" Value="Silver"/>
+            <Setter Property="ToolTip">
+                <Setter.Value>
+                    <StackPanel>
+                        <TextBlock Foreground="{StaticResource WindowForegroundBrush}" Text="{Binding EventType}"/>
+                        <TextBlock><Run Text="Start Time  "/><Run Foreground="Silver" Text="{Binding StartTimeLocal, StringFormat='h:mm tt'}"/></TextBlock>
+                        <TextBlock><Run Text="Starts in  "/><Run Foreground="Silver" Text="{Binding RemainingTimeToJoin, StringFormat='h\\:mm\\:ss', Mode=OneWay}"/></TextBlock>
+                        <TextBlock><Run Text="Registered  "/><Run Foreground="Silver" Text="{Binding NumRegistered}"/></TextBlock>
+                    </StackPanel>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local:SessionSlider}">
+                        <Track>
+                            <Track.Thumb>
+                                <Thumb/>
+                            </Track.Thumb>
+                        </Track>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsExpired}" Value="true">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Background" Value="#222222"/>
+                    <Setter Property="BorderBrush" Value="Gray"/>
+                    <Setter Property="Foreground" Value="Gray"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding IsLowAlert}" Value="true">
+                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Prefix" Value="in"/>
+                    <Setter Property="Text" Value="{Binding RemainingTimeFormatted}"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding IsHighAlert}" Value="true">
+                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="Foreground" Value="Yellow"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation 
+                                    Storyboard.TargetProperty="(Control.BorderBrush).Color"
+                                    BeginTime="0:0:0" 
+                                    Duration="0:0:0.4"
+                                    To="Yellow"
+                                    RepeatBehavior="Forever" 
+                                    AutoReverse="True"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>  
+        
+        <Style x:Key="RSliderStyle" BasedOn="{StaticResource SessionSliderStyle}" TargetType="{x:Type local:SessionSlider}">
+            <Setter Property="BorderBrush" Value="{StaticResource RBorderBrush}"/>
+            <Setter Property="Background" Value="{StaticResource RBackgroundBrush}"/>
+        </Style>
+
+        <Style x:Key="QSliderStyle" BasedOn="{StaticResource SessionSliderStyle}" TargetType="{x:Type local:SessionSlider}">
+            <Setter Property="BorderBrush" Value="{StaticResource QBorderBrush}"/>
+            <Setter Property="Background" Value="{StaticResource QBackgroundBrush}"/>
+        </Style>
+
+        <Style x:Key="TSliderStyle" BasedOn="{StaticResource SessionSliderStyle}" TargetType="{x:Type local:SessionSlider}">
+            <Setter Property="BorderBrush" Value="{StaticResource TBorderBrush}"/>
+            <Setter Property="Background" Value="{StaticResource TBackgroundBrush}"/>
+        </Style>
+        
+        <DataTemplate x:Key="RaceItemSessionTemplate">
+            <local:SessionSlider
+                Style="{StaticResource RSliderStyle}"
+                Value="{Binding RemainingSeconds, Mode=OneWay}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="QualItemSessionTemplate">
+            <local:SessionSlider
+                Style="{StaticResource QSliderStyle}"
+                Value="{Binding RemainingSeconds, Mode=OneWay}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TTItemSessionTemplate">
+            <local:SessionSlider
+                Style="{StaticResource TSliderStyle}"
+                Value="{Binding RemainingSeconds, Mode=OneWay}"/>
+        </DataTemplate>
+
+        <local:SessionItemTemplateSelector 
+            x:Key="SessionItemTemplateSelector"
+            RaceItemTemplate="{StaticResource RaceItemSessionTemplate}"
+            QualItemTemplate="{StaticResource QualItemSessionTemplate}"
+            TTItemTemplate="{StaticResource TTItemSessionTemplate}"/>
+
+        <ItemsPanelTemplate x:Key="SessionItemsPanel">
+            <Grid IsItemsHost="True" />
+        </ItemsPanelTemplate>
+
+        <Style x:Key="BarStyle" TargetType="{x:Type ItemsControl}">
+            <Setter Property="ItemsPanel" Value="{StaticResource SessionItemsPanel}"/>
+            <Setter Property="ItemTemplateSelector" Value="{StaticResource SessionItemTemplateSelector}"/>
+        </Style>
+
+        <!-- Styles the grid's tick bars -->
+        <Style TargetType="{x:Type TickBar}">
+            <Setter Property="Margin" Value="12 0 0 0"/>
+            <Setter Property="Height" Value="3000"/>
+            <Setter Property="Fill" Value="{StaticResource GridLinesBrush}"/>
+            <Setter Property="Placement" Value="Bottom"/>
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="7200"/>
+        </Style>      
+
+        <!-- Used for the border of the window -->
+        <Style x:Key="TransparentWindowResizeThumbStyle"
+           TargetType="{x:Type Thumb}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border Background="{TemplateBinding Background}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+    </Application.Resources>
+</Application>

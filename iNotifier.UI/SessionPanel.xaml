@@ -1,0 +1,73 @@
+﻿<UserControl 
+    x:Class="SessionSpotter.SessionPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:SessionSpotter"
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Template>
+        <ControlTemplate>
+            <Grid 
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                Name="PART_Main"
+                ClipToBounds="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Name="PART_SplitterRow" Height="Auto" />
+                    <RowDefinition Name="PART_DebugGridRow" Height="0*" />
+                </Grid.RowDefinitions>
+
+                <Grid 
+                    Grid.Row="0">
+                    <local:SessionChart 
+                        Name="PART_SessionsPane"/>
+                    <local:RefreshPanel
+                        Name="Part_RefreshPane"
+                        Visibility="Collapsed"/>
+                </Grid>
+                
+
+                <TextBlock 
+                    HorizontalAlignment="Center"
+                    FontSize="20"
+                    FontWeight="ExtraBold"
+                    Margin="0 -10 0 0"
+                    Foreground="{StaticResource UpdateTimerForegroundBrush}" 
+                    Grid.Row="1"
+                    Text=". . ."/>
+                    
+                <GridSplitter
+                    ToolTip="Debug pane - drag to open"
+                    Name="PART_GridSplitter"
+                    Background="Transparent" 
+                    HorizontalAlignment="Stretch" 
+                    Grid.Row="1"/>
+
+                <DockPanel
+                    Name="PART_DebugGrid"
+                    Grid.Row="2">
+                    <TextBlock DockPanel.Dock="Top"><Run Text="Sessions updated: "/><Run Text="{Binding LastUpdatedTime, StringFormat='h:mm:ss tt'}"/></TextBlock>
+                    <TextBlock DockPanel.Dock="Top"><Run Text="SeriesID: "/><Run Text="{Binding WeekendInfo.SeriesID}"/></TextBlock>
+                    <TextBlock DockPanel.Dock="Top"><Run Text="SeasonID: "/><Run Text="{Binding WeekendInfo.SeasonID}"/></TextBlock>
+                    <TextBlock DockPanel.Dock="Top"><Run Text="Bytes Transfered: "/><Run Text="{Binding Settings.DownloadedBytes, StringFormat='#,0,. kb'}"/></TextBlock>
+                    <DataGrid ItemsSource="{Binding Sessions.All}" />
+                </DockPanel>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <DataTrigger Binding="{Binding Settings.IsDebugPaneVisible}" Value="False">
+                    <Setter TargetName="PART_SplitterRow" Property="MaxHeight" Value="0"/>
+                    <Setter TargetName="PART_DebugGridRow" Property="MaxHeight" Value="0"/>
+                    <Setter TargetName="PART_DebugGrid" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Sessions.Valid}" Value="False">
+                    <Setter TargetName="PART_SessionsPane" Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="Part_RefreshPane" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Template>
+</UserControl>

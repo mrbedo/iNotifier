@@ -1,0 +1,135 @@
+<tr:TransparentWindow
+    x:Class="SessionSpotter.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:SessionSpotter"
+    
+    xmlns:tr="clr-namespace:System.Windows.Controls;assembly=TransparentWindowLibrary"
+    Loaded="Window_Loaded"
+    Closing="Window_Closing"
+    Height="100"
+    Topmost="{Binding Settings.IsWindowTopmost}"
+    Width="300">
+    <tr:TransparentWindow.Style>
+        <Style TargetType="{x:Type tr:TransparentWindow}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="FontFamily" Value="Calibri"/>
+            <Setter Property="Title" Value="iNotifier"/>
+            <Setter Property="Icon" Value="iNotifier.ico"/>
+            <Setter Property="Foreground" Value="{StaticResource WindowForegroundBrush}"/>
+            <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type tr:TransparentWindow}">
+                        <Grid Name="PART_ContainerGrid">
+                            <!-- Transparent grid. Style from TransparentWindow library -->
+                            <Grid>
+                                <Border Background="{TemplateBinding Background}"/>
+                                <Border 
+                                    x:Name="windowBorder"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"/>
+                                <AdornerDecorator>
+                                    <Grid 
+                                        x:Name="contentGrid"
+                                        Background="{TemplateBinding Background}"
+                                        Margin="5">
+                                        <ContentPresenter/>
+                                    </Grid>
+                                </AdornerDecorator>
+                                <Thumb 
+                                    Name="PART_SizeNE" 
+                                    Style="{StaticResource TransparentWindowResizeThumbStyle}"
+                                    Cursor="SizeNESW"
+                                    Width="16"
+                                    Height="16"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Right"/>
+                                <Thumb 
+                                    Name="PART_SizeSW" 
+                                    Style="{StaticResource TransparentWindowResizeThumbStyle}"
+                                    Cursor="SizeNESW"
+                                    Width="16"
+                                    Height="16"
+                                    VerticalAlignment="Bottom"
+                                    HorizontalAlignment="Left"/>
+                                <Thumb 
+                                    Name="PART_SizeNW"
+                                    Style="{StaticResource TransparentWindowResizeThumbStyle}"
+                                    Cursor="SizeNWSE"
+                                    Width="16"
+                                    Height="16"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Left"/>
+                                <Thumb 
+                                    Name="PART_SizeSE" 
+                                    Style="{StaticResource TransparentWindowResizeThumbStyle}"
+                                    Cursor="SizeNWSE"
+                                    Width="16"
+                                    Height="16"
+                                    VerticalAlignment="Bottom"
+                                    HorizontalAlignment="Right"/>
+                                <Thumb 
+                                    Name="PART_SizeN"
+                                    Style="{StaticResource TransparentWindowResizeThumbStyle}"
+                                    Cursor="SizeNS"
+                                    Height="4"
+                                    VerticalAlignment="Top"
+                                    Margin="16,0,16,0"/>
+                                <Thumb 
+                                    Name="PART_SizeS"
+                                    Style="{StaticResource TransparentWindowResizeThumbStyle}"
+                                    Cursor="SizeNS"
+                                    Height="4"
+                                    VerticalAlignment="Bottom"
+                                    Margin="16,0,16,0"/>
+                                <Thumb 
+                                    Name="PART_SizeW"
+                                    Style="{StaticResource TransparentWindowResizeThumbStyle}"
+                                    Cursor="SizeWE"
+                                    Width="4"
+                                    HorizontalAlignment="Left"
+                                    Margin="0,16,0,16"/>
+                                <Thumb 
+                                    Name="PART_SizeE"
+                                    Style="{StaticResource TransparentWindowResizeThumbStyle}"
+                                    Cursor="SizeWE"
+                                    Width="4"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,16,0,16"/>
+                            </Grid>
+
+                            <Grid
+                                Margin="8" 
+                                Background="Transparent"
+                                PreviewMouseLeftButtonDown="PART_ContainerGrid_PreviewMouseLeftButtonDown">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <local:Header
+                                    Grid.Row="0"/>
+                                <local:SessionPanel  
+                                    Grid.Row="1"
+                                    Name="PART_Sessions"/>
+                                <local:SettingsPanel 
+                                    Name="PART_Settings"         
+                                    Grid.Row="1"
+                                    Visibility="Collapsed"/>
+                            </Grid>
+                        </Grid>
+                        
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsSettingsVisible}" Value="True">
+                                <Setter TargetName="PART_Sessions" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="PART_Settings" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </tr:TransparentWindow.Style>
+</tr:TransparentWindow>
